@@ -114,6 +114,10 @@
       (dispatch [:daily-notes/reset]))
     (navigate :home)))
 
+; get-day in utils: returns today's note, {:uid :title}
+; (dispatch [:daily-note/next (get-day)])
+; ()
+
 
 (defn navigate-uid
   "Don't navigate if already on the page."

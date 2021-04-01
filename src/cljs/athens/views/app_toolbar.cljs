@@ -24,6 +24,7 @@
     [reagent.core :as r]
     [stylefy.core :as stylefy :refer [use-style]]))
 
+(def log (js/require "electron-log"))
 
 ;;; Styles
 
@@ -115,7 +116,18 @@
             [button {:on-click #(.back js/window.history)} [:> ChevronLeft]]
             [button {:on-click #(.forward js/window.history)} [:> ChevronRight]]
             [separator]])
-         [button {:on-click router/nav-daily-notes
+         ; Opens today's daily note. If clicked with Shift pressed, opens
+         ; today's daily note in sidebar.
+         [button {:on-click (fn [e]
+                              (if (.-shiftKey e)
+                                (do
+                                  (.. log (info e))
+                                  (.. log (info "shift pressed, will open today's note in sidebar..."))
+                                  (dispatch [:right-sidebar/open-today-note]))
+                                (do
+                                  (.. log (info e))
+                                  (.. log (info "no shift pressed, will do router/nav-daily-notes"))
+                                  (router/nav-daily-notes))))
                   :active   (= @route-name :home)} [:> Today]]
          [button {:on-click #(router/navigate :pages)
                   :active   (= @route-name :pages)} [:> FileCopy]]

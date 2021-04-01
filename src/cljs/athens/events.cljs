@@ -4,7 +4,7 @@
     [athens.keybindings :as keybindings]
     [athens.patterns :as patterns]
     [athens.style :as style]
-    [athens.util :refer [now-ts gen-block-uid]]
+    [athens.util :refer [get-day now-ts gen-block-uid]]
     [clojure.string :as string]
     [datascript.core :as d]
     [datascript.transit :as dt]
@@ -210,6 +210,18 @@
   :right-sidebar/set-width
   (fn [db [_ width]]
     (assoc db :right-sidebar/width width)))
+
+;; Opens today's daily note in the right sidebar.
+(reg-event-db
+  :right-sidebar/open-today-note
+  (fn [db _]
+    (let [{:keys [uid title]} (get-day)]
+      {:dispatch [:right-sidebar/open-item uid]})))
+;      {:fx
+;       [:dispatch
+;        (remove nil?
+;          [(when-not (db/e-by-av :block/uid uid) [:page/create title uid])
+;           [:right-sidebar/open-item uid]])]})))
 
 
 (reg-event-db
@@ -506,6 +518,7 @@
          :dispatch [:page/create title uid]}))))
 
 
+; creates new daily note; new key is uid
 (reg-event-fx
   :daily-note/next
   (fn [{:keys [db]} [_ {:keys [uid title]}]]
