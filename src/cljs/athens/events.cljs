@@ -211,12 +211,14 @@
   (fn [db [_ width]]
     (assoc db :right-sidebar/width width)))
 
+; reg-event-db: simplified version of reg-event-fx, just for db
+
 ;; Opens today's daily note in the right sidebar.
-(reg-event-db
-  :right-sidebar/open-today-note
-  (fn [db _]
-    (let [{:keys [uid title]} (get-day)]
-      {:dispatch [:right-sidebar/open-item uid]})))
+;(reg-event-db
+;  :right-sidebar/open-today-note
+;  (fn [db _]
+;    (let [{:keys [uid title]} (get-day)]
+;      {:dispatch [:right-sidebar/open-item uid]})))
 ;      {:fx
 ;       [:dispatch
 ;        (remove nil?
@@ -262,6 +264,18 @@
           (update-in [:right-sidebar/items] dissoc uid)
           (update-in [:right-sidebar/items] assoc breadcrumb-uid new-item)))))
 
+
+(reg-event-fx
+  :right-sidebar/open-today-note
+  (fn [db _]
+    (let [{:keys [uid title]} (get-day)]
+      {:fx [[:dispatch [:right-sidebar/open-item [uid false]]]]})))
+
+;      {:fx
+;       [:dispatch
+;        (remove nil?
+;          [(when-not (db/e-by-av :block/uid uid) [:page/create title uid])
+;           [:right-sidebar/open-item uid]])]})))
 
 ;; TODO: change right sidebar items from map to datascript
 (reg-event-fx
