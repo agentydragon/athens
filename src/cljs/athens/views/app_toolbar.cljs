@@ -121,11 +121,12 @@
          [button {:on-click (fn [e]
                               (if (.-shiftKey e)
                                 (do
-                                  (.. log (info e))
+                                  ;(.. log (info e))
                                   (.. log (info "shift pressed, will open today's note in sidebar..."))
-                                  (dispatch [:right-sidebar/open-today-note]))
+                                  (dispatch [:right-sidebar/open-today-note])
+                                  )
                                 (do
-                                  (.. log (info e))
+                                  ;(.. log (info e))
                                   (.. log (info "no shift pressed, will do router/nav-daily-notes"))
                                   (router/nav-daily-notes))))
                   :active   (= @route-name :home)} [:> Today]]

@@ -269,13 +269,10 @@
   :right-sidebar/open-today-note
   (fn [db _]
     (let [{:keys [uid title]} (get-day)]
-      {:fx [[:dispatch [:right-sidebar/open-item [uid false]]]]})))
-
-;      {:fx
-;       [:dispatch
-;        (remove nil?
-;          [(when-not (db/e-by-av :block/uid uid) [:page/create title uid])
-;           [:right-sidebar/open-item uid]])]})))
+      {:fx [
+        ; If today's daily page does not exist yet, create it.
+        (when-not (db/e-by-av :block/uid uid) [:page/create title uid])
+        [:dispatch [:right-sidebar/open-item uid false]]]})))
 
 ;; TODO: change right sidebar items from map to datascript
 (reg-event-fx
