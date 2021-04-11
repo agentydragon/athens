@@ -211,20 +211,6 @@
   (fn [db [_ width]]
     (assoc db :right-sidebar/width width)))
 
-; reg-event-db: simplified version of reg-event-fx, just for db
-
-;; Opens today's daily note in the right sidebar.
-;(reg-event-db
-;  :right-sidebar/open-today-note
-;  (fn [db _]
-;    (let [{:keys [uid title]} (get-day)]
-;      {:dispatch [:right-sidebar/open-item uid]})))
-;      {:fx
-;       [:dispatch
-;        (remove nil?
-;          [(when-not (db/e-by-av :block/uid uid) [:page/create title uid])
-;           [:right-sidebar/open-item uid]])]})))
-
 
 (reg-event-db
   :mouse-down/set
@@ -265,13 +251,20 @@
           (update-in [:right-sidebar/items] assoc breadcrumb-uid new-item)))))
 
 
+; Opens today's daily note in the right sidebar. Triggered by Shift+Click on
+; daily page button.
 (reg-event-fx
   :right-sidebar/open-today-note
   (fn [db _]
     (let [{:keys [uid title]} (get-day)]
       {:fx [
         ; If today's daily page does not exist yet, create it.
-        (when-not (db/e-by-av :block/uid uid) [:page/create title uid])
+        (when-not (db/e-by-av :block/uid uid)
+          [:dispatch [:page/create title uid]])
+        ; TODO(agentydragon): If this was invoked from daily notes page, and the
+        ; daily page for the day did not yet exist, we will open it in the
+        ; sidebar, but not update the daily notes page to show the new daily
+        ; note. We might need to send some :daily-notes/? events.
         [:dispatch [:right-sidebar/open-item uid false]]]})))
 
 ;; TODO: change right sidebar items from map to datascript
@@ -529,7 +522,6 @@
          :dispatch [:page/create title uid]}))))
 
 
-; creates new daily note; new key is uid
 (reg-event-fx
   :daily-note/next
   (fn [{:keys [db]} [_ {:keys [uid title]}]]
