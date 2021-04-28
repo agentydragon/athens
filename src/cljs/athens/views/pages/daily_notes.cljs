@@ -32,8 +32,7 @@
    :margin "1.25rem 2.5rem"
    :padding "1rem 2rem"
    :transition-duration "0s"
-   :border-radius "0.5rem"
-   :min-height "calc(100vh - 10rem)"})
+   :border-radius "0.5rem"})
 
 
 (def daily-notes-notional-page-style
