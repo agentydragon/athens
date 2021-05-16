@@ -21,6 +21,11 @@
     [:block [:paragraph "A " [:page-link "link"] " and another " [:page-link "link"] "."]]
     "A [[link]] and another [[link]]."
 
+    ; Regression test for:
+    ; https://github.com/athensresearch/athens/issues/1058
+    [:block [:paragraph "Link inthe" [:page-link "middle"] "of aword"]]
+    "Link inthe[[middle]]of aword"
+
     [:block [:paragraph "Some " [:page-link "Nested " [:page-link "Links"]] " and something"]]
     "Some [[Nested [[Links]]]] and something"
 
